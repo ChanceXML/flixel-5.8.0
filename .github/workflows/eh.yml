@@ -24,11 +24,12 @@ jobs:
       - name: fetch specific url/tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_URL: ${{ inputs.url }}
+          RAW_URL: ${{ inputs.url }}
           TAG: ${{ inputs.release_tag }}
         run: |
+          CLEANED_REPO=$(echo "$RAW_URL" | sed -e 's|https://github.com||' -e 's|http://github.com||' -e 's|/$||')
           gh release download "$TAG" \
-            --repo "$REPO_URL" \
+            --repo "$CLEANED_REPO" \
             --archive=zip \
             --output release.zip
 
@@ -48,13 +49,10 @@ jobs:
           REPO_URL: ${{ inputs.url }}
           TAG: ${{ inputs.release_tag }}
         run: |
-          AUTO_EMAIL="${ACTOR_ID}+${ACTOR_NAME}@://github.com"
-          
+          AUTO_EMAIL="${ACTOR_ID}+${ACTOR_NAME}@users.noreply.github.com"
           git config user.name "$ACTOR_NAME"
           git config user.email "$AUTO_EMAIL"
-          
           git add .
-          
           git commit -m "Add release $TAG from $REPO_URL" \
                      -m "Co-authored-by: github-actions <github-actions@github.com>"
           git push
