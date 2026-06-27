@@ -27,7 +27,7 @@ jobs:
           RAW_URL: ${{ inputs.url }}
           TAG: ${{ inputs.release_tag }}
         run: |
-          CLEANED_REPO=$(echo "$RAW_URL" | sed -e 's|https://github.com||' -e 's|http://github.com||' -e 's|/$||')
+          CLEANED_REPO=$(echo "$RAW_URL" | sed -e 's|https://github.com||' -e 's|http://github.com||' -e 's|https://github.com||' -e 's|http://github.com||' -e 's|/$||')
           gh release download "$TAG" \
             --repo "$CLEANED_REPO" \
             --archive=zip \
