@@ -27,7 +27,7 @@ jobs:
           RAW_URL: ${{ inputs.url }}
           TAG: ${{ inputs.release_tag }}
         run: |
-          CLEANED_REPO=$(echo "$RAW_URL" | sed -e 's|https://github.com||' -e 's|http://github.com||' -e 's|https://github.com||' -e 's|http://github.com||' -e 's|/$||')
+          CLEANED_REPO=$(echo "$RAW_URL" | sed 's|/$||' | awk -F'/' '{print $(NF-1)"/"$NF}')
           gh release download "$TAG" \
             --repo "$CLEANED_REPO" \
             --archive=zip \
@@ -56,3 +56,4 @@ jobs:
           git commit -m "Add release $TAG from $REPO_URL" \
                      -m "Co-authored-by: github-actions <github-actions@github.com>"
           git push
+          
