@@ -7,7 +7,7 @@ on:
         description: 'URL'
         required: true
         type: string
-        default: ''
+        default: 'https://github.com'
       release_tag:
         description: 'Release Tag'
         required: true
@@ -30,7 +30,6 @@ jobs:
           CLEANED_REPO=$(echo "$RAW_URL" | sed 's|/$||' | awk -F'/' '{print $(NF-1)"/"$NF}')
           
           if ! gh release download "$TAG" --repo "$CLEANED_REPO" --archive=zip --output release.zip 2>/dev/null; then
-            echo "Release wrapper not found. Downloading via direct Git tag zipball instead..."
             curl -L "https://github.com{CLEANED_REPO}/archive/refs/tags/${TAG}.zip" -o release.zip
           fi
 
